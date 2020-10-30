@@ -1,8 +1,0 @@
-apiVersion: v2
-name: frontend-service-viewer
-description: A Helm chart for frontend-service-viewer
-type: application
-# Chart version
-version: 0.1.0
-# Application tag
-appVersion: dev
