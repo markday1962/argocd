@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: frontend-service-viewer
-  name: frontend-service-viewer
+    app: frontend-service-viewer-2
+  name: frontend-service-viewer-2
   namespace: default
 spec:
   progressDeadlineSeconds: 600
@@ -11,7 +11,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: frontend-service-viewer
+      app: frontend-service-viewer-2
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -20,12 +20,12 @@ spec:
   template:
     metadata:
       labels:
-        app: frontend-service-viewer
+        app: frontend-service-viewer-2
     spec:
       containers:
-      - image: 111177312954.dkr.ecr.eu-west-1.amazonaws.com/aistemos/frontend-service-viewer:dev
+      - image: 111177312954.dkr.ecr.eu-west-1.amazonaws.com/aistemos/frontend-service-viewer-2:dev
         imagePullPolicy: Always
-        name: frontend-service-viewer
+        name: frontend-service-viewer-2
         ports:
         - containerPort: 5000
           name: application
@@ -65,5 +65,5 @@ spec:
       volumes:
       - configMap:
           defaultMode: 292
-          name: frontend-service-viewer-cm
+          name: frontend-service-viewer-2-cm
         name: config-volume
