@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: frontend-service-viewer
+  name: frontend-service-viewer
+  namespace: default
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: frontend-service-viewer
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: frontend-service-viewer
+    spec:
+      containers:
+      - image: 111177312954.dkr.ecr.eu-west-1.amazonaws.com/aistemos/frontend-service-viewer:dev
+        imagePullPolicy: Always
+        name: frontend-service-viewer
+        ports:
+        - containerPort: 5000
+          name: application
+          protocol: TCP
+        resources: {}
+        securityContext:
+          runAsUser: 1000
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/src/app/server/.env
+          name: config-volume
+          subPath: .env
+      - args:
+        - --reporter.grpc.host-port=jaeger-stack-svc.monitoring.svc.cluster.local:14250
+        image: jaegertracing/jaeger-agent:1.17
+        imagePullPolicy: IfNotPresent
+        name: jaegertracing
+        ports:
+        - containerPort: 5778
+          name: p1
+          protocol: TCP
+        - containerPort: 6831
+          name: p2
+          protocol: UDP
+        - containerPort: 6832
+          name: p3
+          protocol: UDP
+        resources: {}
+        securityContext:
+          runAsUser: 1000
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 292
+          name: frontend-service-viewer-cm
+        name: config-volume
