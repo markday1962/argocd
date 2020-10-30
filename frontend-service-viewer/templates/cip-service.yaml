@@ -1,0 +1,27 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  {{- if .Values.prefix }}
+  name: {{ .Values.prefix }}-{{ .Chart.Name }}-svc
+  labels:
+    app: {{ .Values.prefix }}-{{ .Chart.Name }}
+  {{- else }}
+  name: {{ .Chart.Name }}-svc
+  labels:
+    app: {{ .Chart.Name }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.private.type }}
+  ports:
+    {{- range .Values.service.private.ports }}
+      - name: {{ .name }}
+        port: {{ .port }}
+        targetPort: {{ .targetPort }}
+    {{- end }}
+  selector:
+    {{- if .Values.prefix }}
+    app: {{ .Values.prefix }}-{{ .Chart.Name }}
+    {{- else }}
+    app: {{ .Chart.Name }}
+    {{- end }}

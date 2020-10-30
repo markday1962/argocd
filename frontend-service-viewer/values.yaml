@@ -1,0 +1,128 @@
+kind: Deployment # or StatefulSet
+zone: ""
+application:
+  publicImage: ""
+  imagePullPolicy: Always
+  command: ""
+  args: ""
+  envs:
+    - name: ""
+      value: ""
+  nodeSelector:
+    nodeGroup: "helm-cipher"
+  ports:
+    - name: application
+      port: 5000
+      protocol: TCP
+  replicaCount: 1
+  runAsUser: 1000
+  readiness:
+    probeType: httpGet
+    port: 5000
+    path: /identify
+    scheme: HTTP
+    initialDelaySeconds: 15
+    periodSeconds: 10
+  liveness:
+    probeType: httpGet
+    port: 5000
+    path: /identify
+    scheme: HTTP
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  mounts:
+    configMap:
+      mountPath: "/usr/src/app/server/.env"
+      subPath: .env
+    additionalMap:
+      name: ""
+      mountPath: ""
+      subPath: ""
+sidecar:
+  enabled: ""
+  name: ""
+  image: ""
+  publicImage: ""
+  imagePullPolicy: IfNotPresent
+  command: ""
+  args: ""
+  env:
+    name: ""
+    value: ""
+  tag: ""
+  ports:
+    - name: application
+      port: ""
+      protocol: TCP
+  runAsUser: ""
+statefulSet:
+  name: ""
+  accessModes: ReadWriteOnce
+  storage: 10Gi
+  mountPath: ""
+  subPath: ""
+initContainers:
+  c1:
+    name: ""
+    image: ""
+    command: ""
+    volumeMounts:
+      name: ""
+      mountPath: ""
+    securityContext:
+      privileged: true
+      runAsUser: 0
+  c2:
+    name: ""
+    image: ""
+    command: ""
+    volumeMounts:
+      name: ""
+      mountPath: ""
+    securityContext:
+      privileged: true
+      runAsUser: 0
+s3Bucket:
+  name: ""
+jaegerAgent:
+  enabled: true
+efs:
+  cc:
+    claimName: cc-efs
+    mountPath: ""
+    subPath: ""
+  cipher:
+    claimName: dev-cipher-efs-pvc
+    mountPath: ""
+    subPath: ""
+pvc:
+  container: "" # application or sidecar
+  claimName: ""
+  mountPath: ""
+  subPath: ""
+  storageClassName: gp2
+  storageSize: 10Gi
+  accessModes: ReadWriteOnce
+emptyDir:
+  name: ""
+  mountPath: ""
+  subPath: ""
+hostPath:
+  name: ""
+  path: ""
+  mountPath: ""
+  subPath: ""
+service:
+  private:
+    type: ClusterIP
+    ports:
+      - name: application
+        port: 5000
+        targetPort: 5000
+  public:
+    type: NodePort
+    ports:
+      - name: application
+        port: 5000
+        targetPort: 5000
+        nodePort: 31501
